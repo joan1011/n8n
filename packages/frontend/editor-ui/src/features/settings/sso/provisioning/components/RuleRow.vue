@@ -4,12 +4,20 @@ import { N8nButton, N8nIcon, N8nOption, N8nSelect } from '@n8n/design-system';
 import { ElSwitch } from 'element-plus';
 import { useI18n } from '@n8n/i18n';
 import { useRolesStore } from '@/app/stores/roles.store';
-import type { RoleMappingRuleResponse } from '../types';
+import type { RoleMappingRuleResponse, RoleMappingRuleType } from '../types';
 import RuleMappingExpressionInput from './RuleMappingExpressionInput.vue';
 
-const props = defineProps<{
-	rule: RoleMappingRuleResponse;
-}>();
+const props = withDefaults(
+	defineProps<{
+		rule: RoleMappingRuleResponse;
+		type?: RoleMappingRuleType;
+		projects?: Array<{ id: string; name: string }>;
+	}>(),
+	{
+		type: 'instance',
+		projects: () => [],
+	},
+);
 
 const emit = defineEmits<{
 	update: [id: string, patch: Partial<RoleMappingRuleResponse>];
@@ -24,6 +32,14 @@ const instanceRoleOptions = computed(() =>
 		.filter((role) => !role.systemRole)
 		.map((role) => ({ label: role.displayName, value: role.slug })),
 );
+
+const projectRoleOptions = computed(() =>
+	rolesStore.processedProjectRoles.map((role) => ({ label: role.name, value: role.slug })),
+);
+
+const roleOptions = computed(() =>
+	props.type === 'project' ? projectRoleOptions.value : instanceRoleOptions.value,
+);
 </script>
 <template>
 	<div :class="$style.row" data-test-id="rule-row">
@@ -35,11 +51,29 @@ const instanceRoleOptions = computed(() =>
 			data-test-id="rule-toggle"
 			@update:model-value="emit('update', props.rule.id, { enabled: $event as boolean })"
 		/>
+<<<<<<< HEAD
 		<RuleMappingExpressionInput
 			:model-value="props.rule.expression"
 			:placeholder="i18n.baseText('settings.sso.settings.roleMappingRules.expression.placeholder')"
 			@update:model-value="emit('update', props.rule.id, { expression: $event })"
 		/>
+		<div v-if="props.type === 'project'" :class="$style.projectSelect">
+			<N8nSelect
+				:model-value="props.rule.projectIds"
+				size="small"
+				multiple
+				placeholder="Select projects"
+				data-test-id="rule-project-select"
+				@update:model-value="emit('update', props.rule.id, { projectIds: $event as string[] })"
+			>
+				<N8nOption
+					v-for="project in props.projects"
+					:key="project.id"
+					:label="project.name"
+					:value="project.id"
+				/>
+			</N8nSelect>
+		</div>
 		<div :class="$style.roleSelect">
 			<N8nSelect
 				:model-value="props.rule.role"
@@ -49,7 +83,7 @@ const instanceRoleOptions = computed(() =>
 				@update:model-value="emit('update', props.rule.id, { role: String($event) })"
 			>
 				<N8nOption
-					v-for="option in instanceRoleOptions"
+					v-for="option in roleOptions"
 					:key="option.value"
 					:label="option.label"
 					:value="option.value"
@@ -92,6 +126,19 @@ const instanceRoleOptions = computed(() =>
 	}
 }
 
+<<<<<<< HEAD
+=======
+.expression {
+	flex: 1;
+	min-width: 0;
+}
+
+.projectSelect {
+	width: 200px;
+	flex-shrink: 0;
+}
+
+>>>>>>> 32bc8b3e85 (feat(editor): add project rules, fallback role, remove mapping, save flow)
 .roleSelect {
 	width: 160px;
 	flex-shrink: 0;
