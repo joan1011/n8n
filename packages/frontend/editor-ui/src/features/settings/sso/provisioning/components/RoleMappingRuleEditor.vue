@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useI18n } from '@n8n/i18n';
 import { useRBACStore } from '@/app/stores/rbac.store';
+import { useProjectsStore } from '@/features/collaboration/projects/projects.store';
 import { useRoleMappingRules } from '../composables/useRoleMappingRules';
 import RuleSectionHeader from './RuleSectionHeader.vue';
 import RuleList from './RuleList.vue';
@@ -14,6 +15,11 @@ const emit = defineEmits<{
 
 const i18n = useI18n();
 const canManageRules = useRBACStore().hasScope('roleMappingRule:create');
+const projectsStore = useProjectsStore();
+
+const availableProjects = computed(() =>
+	projectsStore.teamProjects.map((p) => ({ id: p.id, name: p.name })),
+);
 
 const {
 	instanceRules,
@@ -27,13 +33,6 @@ const {
 	loadRules,
 	save,
 } = useRoleMappingRules();
-
-// Mock projects for now — will come from a real API
-const availableProjects = ref([
-	{ id: 'project-1', name: 'Marketing Automation' },
-	{ id: 'project-2', name: 'Data Pipeline' },
-	{ id: 'project-3', name: 'Customer Support' },
-]);
 
 onMounted(() => {
 	void loadRules();
