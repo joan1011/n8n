@@ -7,6 +7,7 @@ import type {
 	WorkflowRepository,
 } from '@n8n/db';
 import { GLOBAL_MEMBER_ROLE } from '@n8n/db';
+import type { Logger } from '@n8n/backend-common';
 import type { GlobalConfig } from '@n8n/config';
 
 import { InstanceAiAdapterService } from '../instance-ai.adapter.service';
@@ -45,6 +46,7 @@ const userHasScopesMock = jest.mocked(userHasScopes);
 // Setup
 // ---------------------------------------------------------------------------
 
+const logger = mock<Logger>();
 const globalConfig = mock<GlobalConfig>({ ai: { allowSendingParameterValues: true } });
 const workflowService = mock<WorkflowService>();
 const workflowFinderService = mock<WorkflowFinderService>();
@@ -73,6 +75,7 @@ const executionPersistence = mock<ExecutionPersistence>();
 const eventService = mock<EventService>();
 
 const service = new InstanceAiAdapterService(
+	logger,
 	globalConfig,
 	workflowService,
 	workflowFinderService,

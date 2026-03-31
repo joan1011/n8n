@@ -58,6 +58,7 @@ import {
 	SharedWorkflowRepository,
 	WorkflowRepository,
 } from '@n8n/db';
+import { Logger } from '@n8n/backend-common';
 import { Service } from '@n8n/di';
 import { hasGlobalScope, type Scope } from '@n8n/permissions';
 // eslint-disable-next-line n8n-local-rules/misplaced-n8n-typeorm-import
@@ -110,6 +111,8 @@ import { getBase } from '@/workflow-execute-additional-data';
 
 @Service()
 export class InstanceAiAdapterService {
+	private readonly logger: Logger;
+
 	private readonly allowSendingParameterValues: boolean;
 
 	/**
@@ -138,6 +141,7 @@ export class InstanceAiAdapterService {
 	}
 
 	constructor(
+		logger: Logger,
 		globalConfig: GlobalConfig,
 		private readonly workflowService: WorkflowService,
 		private readonly workflowFinderService: WorkflowFinderService,
@@ -165,6 +169,7 @@ export class InstanceAiAdapterService {
 		private readonly executionPersistence: ExecutionPersistence,
 		private readonly eventService: EventService,
 	) {
+		this.logger = logger.scoped('instance-ai');
 		this.allowSendingParameterValues = globalConfig.ai.allowSendingParameterValues;
 	}
 
@@ -1690,11 +1695,9 @@ export class InstanceAiAdapterService {
 						})),
 					};
 				} catch (error) {
-					console.error(
-						'[explore-resources] ERROR:',
-						error instanceof Error ? error.message : error,
-					);
-					console.error('[explore-resources] stack:', error instanceof Error ? error.stack : 'N/A');
+					this.logger.error('Failed to load options for explore-resources', {
+						error: error instanceof Error ? error.message : String(error),
+					});
 					throw error;
 				}
 			},
