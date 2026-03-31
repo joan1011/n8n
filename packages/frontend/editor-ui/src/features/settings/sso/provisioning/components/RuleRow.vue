@@ -36,7 +36,7 @@ const instanceRoleOptions = computed(() =>
 );
 
 const projectRoleOptions = computed(() =>
-	rolesStore.processedProjectRoles.map((role) => ({ label: role.name, value: role.slug })),
+	rolesStore.processedProjectRoles.map((role) => ({ label: role.displayName, value: role.slug })),
 );
 
 const roleOptions = computed(() =>
@@ -132,19 +132,11 @@ const roleOptions = computed(() =>
 	}
 }
 
-<<<<<<< HEAD
-=======
-.expression {
-	flex: 1;
-	min-width: 0;
-}
-
 .projectSelect {
 	width: 200px;
 	flex-shrink: 0;
 }
 
->>>>>>> 32bc8b3e85 (feat(editor): add project rules, fallback role, remove mapping, save flow)
 .roleSelect {
 	width: 160px;
 	flex-shrink: 0;
