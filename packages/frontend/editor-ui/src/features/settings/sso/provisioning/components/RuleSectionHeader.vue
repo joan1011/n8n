@@ -4,10 +4,14 @@ import { useI18n } from '@n8n/i18n';
 
 const i18n = useI18n();
 
-defineProps<{
-	title: string;
-	description: string;
-}>();
+const props = withDefaults(
+	defineProps<{
+		title: string;
+		description: string;
+		disabled?: boolean;
+	}>(),
+	{ disabled: false },
+);
 
 const emit = defineEmits<{
 	add: [];
@@ -23,6 +27,7 @@ const emit = defineEmits<{
 			type="tertiary"
 			size="small"
 			icon="plus"
+			:disabled="props.disabled"
 			data-test-id="add-rule-button"
 			@click="emit('add')"
 		>

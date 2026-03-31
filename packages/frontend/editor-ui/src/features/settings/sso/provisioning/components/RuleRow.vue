@@ -12,10 +12,12 @@ const props = withDefaults(
 		rule: RoleMappingRuleResponse;
 		type?: RoleMappingRuleType;
 		projects?: Array<{ id: string; name: string }>;
+		disabled?: boolean;
 	}>(),
 	{
 		type: 'instance',
 		projects: () => [],
+		disabled: false,
 	},
 );
 
@@ -48,18 +50,20 @@ const roleOptions = computed(() =>
 		</div>
 		<ElSwitch
 			:model-value="props.rule.enabled"
+			:disabled="props.disabled"
 			data-test-id="rule-toggle"
 			@update:model-value="emit('update', props.rule.id, { enabled: $event as boolean })"
 		/>
-<<<<<<< HEAD
 		<RuleMappingExpressionInput
 			:model-value="props.rule.expression"
+			:disabled="props.disabled"
 			:placeholder="i18n.baseText('settings.sso.settings.roleMappingRules.expression.placeholder')"
 			@update:model-value="emit('update', props.rule.id, { expression: $event })"
 		/>
 		<div v-if="props.type === 'project'" :class="$style.projectSelect">
 			<N8nSelect
 				:model-value="props.rule.projectIds"
+				:disabled="props.disabled"
 				size="small"
 				multiple
 				placeholder="Select projects"
@@ -77,6 +81,7 @@ const roleOptions = computed(() =>
 		<div :class="$style.roleSelect">
 			<N8nSelect
 				:model-value="props.rule.role"
+				:disabled="props.disabled"
 				size="small"
 				placeholder="Select role"
 				data-test-id="rule-role-select"
@@ -94,6 +99,7 @@ const roleOptions = computed(() =>
 			type="tertiary"
 			size="small"
 			icon="trash-2"
+			:disabled="props.disabled"
 			aria-label="Delete rule"
 			data-test-id="rule-delete-button"
 			@click="emit('delete', props.rule.id)"

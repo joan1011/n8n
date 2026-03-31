@@ -8,10 +8,12 @@ const props = withDefaults(
 		rules: RoleMappingRuleResponse[];
 		type?: RoleMappingRuleType;
 		projects?: Array<{ id: string; name: string }>;
+		disabled?: boolean;
 	}>(),
 	{
 		type: 'instance',
 		projects: () => [],
+		disabled: false,
 	},
 );
 
@@ -38,6 +40,10 @@ function onDragEnd(event: { oldIndex?: number; newIndex?: number }) {
 			item-key="id"
 			handle=".drag-handle"
 			:animation="150"
+			:disabled="props.disabled"
+			:drag-class="$style.dragging"
+			:ghost-class="$style.ghost"
+			:chosen-class="$style.chosen"
 			@end="onDragEnd"
 		>
 			<template #item="{ element }">
@@ -45,6 +51,7 @@ function onDragEnd(event: { oldIndex?: number; newIndex?: number }) {
 					:rule="element"
 					:type="props.type"
 					:projects="props.projects"
+					:disabled="props.disabled"
 					@update="(id, patch) => emit('update', id, patch)"
 					@delete="(id) => emit('delete', id)"
 				/>
@@ -68,5 +75,18 @@ function onDragEnd(event: { oldIndex?: number; newIndex?: number }) {
 	text-align: center;
 	padding: var(--spacing--lg) 0;
 	margin: 0;
+}
+
+.ghost {
+	opacity: 0.4;
+}
+
+.chosen {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.dragging {
+	opacity: 0.8;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 </style>

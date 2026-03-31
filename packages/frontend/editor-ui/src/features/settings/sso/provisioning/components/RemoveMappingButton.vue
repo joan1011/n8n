@@ -4,6 +4,13 @@ import { useI18n } from '@n8n/i18n';
 import { useMessage } from '@/app/composables/useMessage';
 import { MODAL_CONFIRM } from '@/app/constants/modals';
 
+const props = withDefaults(
+	defineProps<{
+		disabled?: boolean;
+	}>(),
+	{ disabled: false },
+);
+
 const emit = defineEmits<{
 	remove: [];
 }>();
@@ -34,6 +41,7 @@ async function handleRemove() {
 		<N8nButton
 			type="tertiary"
 			size="medium"
+			:disabled="props.disabled"
 			data-test-id="remove-mapping-button"
 			@click="handleRemove"
 		>

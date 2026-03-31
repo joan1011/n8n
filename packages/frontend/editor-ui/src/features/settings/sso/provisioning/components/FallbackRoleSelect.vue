@@ -4,6 +4,13 @@ import { useI18n } from '@n8n/i18n';
 
 const modelValue = defineModel<string>({ default: 'global:member' });
 
+const props = withDefaults(
+	defineProps<{
+		disabled?: boolean;
+	}>(),
+	{ disabled: false },
+);
+
 const i18n = useI18n();
 
 const roleOptions = [
@@ -16,6 +23,7 @@ const roleOptions = [
 		<label>{{ i18n.baseText('settings.sso.settings.roleMappingRules.fallbackRole.label') }}</label>
 		<N8nSelect
 			:model-value="modelValue"
+			:disabled="props.disabled"
 			size="small"
 			:class="$style.select"
 			@update:model-value="modelValue = String($event)"
